@@ -36,22 +36,38 @@ def close_db(error):
 		g.MySQLdb.close()
 	
 @app.route('/')
-def show_tasks():
-	db = get_db()
-	cursor = db.cursor()
-	cursor.execute("select * from tasks order by id desc")
-	tasks = [dict(title=row[0], description=row[1]) for row in cursor.fetchall()]
-	return render_template('show_tasks.html', tasks=tasks)
+def home_page():
+	return render_template('home_page.html')
+	
+@app.route('/create', methods=['GET'])
+def accept_tasks():
+	#db = get_db()
+	#cursor = db.cursor()
+	#cursor.execute("select * from tasks order by id desc")
+	#tasks = [dict(title=row[0], description=row[1]) for row in cursor.fetchall()]
+	return render_template('add_tasks.html')
 	
 @app.route('/add', methods=['POST'])
 def add_tasks():
-	db=get_db()
-	cursor = db.cursor()
-	cursor.execute('insert into tasks(title, description) values(%s, %s)', 
+	if((request.form['title'] and request.form['description'])==""):
+		flash("Empty task cannot be created")
+	else:
+		db=get_db()
+		cursor = db.cursor()
+		cursor.execute('insert into tasks(title, description) values(%s, %s)', 
 					[request.form['title'], request.form['description']])
-	db.commit()
-	flash("New task was successfully saved")
-	return redirect(url_for('show_tasks'))
+		db.commit()
+		flash("New task was successfully saved")
+	return redirect(url_for('accept_tasks'))
+
+@app.route('/disp', methods=['GET'])	
+def display_tasks():
+	db = get_db()
+	cursor = db.cursor()
+	cursor.execute("select title, description from tasks order by id desc")
+	tasks = [dict(title=row[0], description=row[1]) for row in cursor.fetchall()]
+	print tasks
+	return render_template('display_tasks.html', tasks=tasks)
 	
 if __name__ == '__main__':
 	init_db("schema.sql")

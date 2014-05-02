@@ -17,17 +17,16 @@ h2 {font-size:2em}
 	background:white;
 }
 .flash{
-	background:red;
-	border:1px;
+	background:green;
+	font-size:1em;
 }
 
 .add_task{
 	font-size:1em;
 }
 .view{
-	list-style:none;
+	list-style-type:decimal;
 	margin:0;
-	padding:0;
 }
 .view li { margin: 0.8em 1.2em; }
-.view li h2 { margin-left: 0em; }
+.view li p{ margin-left:1em; }
